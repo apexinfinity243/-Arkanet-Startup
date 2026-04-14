@@ -68,9 +68,9 @@ birthInput.addEventListener("input", function(e) {
 });
 
 // =======================
-// 🔐 VALIDATION FORM
+// 🔐 VALIDATION + ENVOI BACKEND
 // =======================
-document.getElementById("registerForm").addEventListener("submit", function(e) {
+document.getElementById("registerForm").addEventListener("submit", async function(e) {
     e.preventDefault();
 
     let password = document.getElementById("password").value;
@@ -78,7 +78,7 @@ document.getElementById("registerForm").addEventListener("submit", function(e) {
     let birthdate = document.getElementById("birthdate").value;
     let message = document.getElementById("message");
 
-    let phoneNumber = iti.getNumber(); // numéro complet international
+    let phoneNumber = iti.getNumber();
 
     let regex = /^\d{2}\/\d{2}\/\d{4}$/;
 
@@ -97,9 +97,35 @@ document.getElementById("registerForm").addEventListener("submit", function(e) {
         return;
     }
 
-    console.log("Numéro complet :", phoneNumber);
+    // 📦 DONNÉES À ENVOYER
+    const data = {
+        nom: document.getElementById("nom").value,
+        postnom: document.getElementById("postnom").value,
+        prenom: document.getElementById("prenom").value,
+        birthdate: birthdate,
+        lieu: document.getElementById("lieu").value,
+        phone: phoneNumber,
+        email: document.getElementById("email").value,
+        password: password
+    };
 
-    message.innerText = "✔ Inscription réussie (simulation)";
+    try {
+        const res = await fetch("https://arkanet-backend.onrender.com/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        message.innerText = result.message;
+
+    } catch (error) {
+        console.log(error);
+        message.innerText = "❌ Erreur de connexion au serveur";
+    }
 });
 
 // =======================
