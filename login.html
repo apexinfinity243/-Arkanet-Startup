@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion - Arkanet</title>
+    <link rel="stylesheet" href="css/login.css">
+
+    <!-- TEL INPUT -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css"/>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="container">
+    <h2>CONNEXION</h2>
+
+    <form id="loginForm">
+
+        <!-- Choix méthode -->
+        <select id="loginType">
+            <option value="phone">Numéro</option>
+            <option value="email">Gmail</option>
+        </select>
+
+        <!-- Téléphone -->
+        <input type="tel" id="phone" placeholder="Numéro de téléphone">
+
+        <!-- Email -->
+        <input type="email" id="email" placeholder="Gmail" style="display:none;">
+
+        <!-- Mot de passe -->
+        <input type="password" id="password" placeholder="Mot de passe" required>
+
+        <button type="submit">Se connecter</button>
+
+        <p onclick="goRegister()">Créer un compte</p>
+
+    </form>
+
+    <div id="message"></div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
+<script src="js/login.js"></script>
+
+</body>
+</html>
