@@ -78,7 +78,7 @@ document.getElementById("registerForm").addEventListener("submit", async functio
     let birthdate = document.getElementById("birthdate").value;
     let message = document.getElementById("message");
 
-    let phoneNumber = iti.getNumber();
+    let phoneNumber = iti.getNumber() || phoneInput.value;
 
     let regex = /^\d{2}\/\d{2}\/\d{4}$/;
 
@@ -87,7 +87,7 @@ document.getElementById("registerForm").addEventListener("submit", async functio
         return;
     }
 
-    if (phoneNumber.length < 8) {
+    if (!phoneNumber || phoneNumber.length < 6) {
     message.innerText = "❌ Numéro invalide";
     return;
     }
