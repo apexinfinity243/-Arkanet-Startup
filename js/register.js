@@ -87,9 +87,9 @@ document.getElementById("registerForm").addEventListener("submit", async functio
         return;
     }
 
-    if (!iti.isValidNumber()) {
-        message.innerText = "❌ Numéro invalide";
-        return;
+    if (phoneNumber.length < 8) {
+    message.innerText = "❌ Numéro invalide";
+    return;
     }
 
     if (password !== confirm) {
