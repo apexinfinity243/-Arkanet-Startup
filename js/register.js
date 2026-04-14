@@ -120,7 +120,15 @@ document.getElementById("registerForm").addEventListener("submit", async functio
 
         const result = await res.json();
 
-        message.innerText = result.message;
+        if (result.message.includes("réussie")) {
+    message.innerText = "✅ Inscription réussie ! Redirection...";
+
+    setTimeout(() => {
+        window.location.href = "dashboard.html";
+    }, 2000);
+} else {
+    message.innerText = result.message;
+        }
 
     } catch (error) {
         console.log(error);
