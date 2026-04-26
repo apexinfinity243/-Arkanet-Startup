@@ -1,144 +1,142 @@
-// =======================
-// 🌧 MATRIX EFFECT
-// =======================
-const canvas = document.getElementById("matrix");
-const ctx = canvas.getContext("2d");
+document.addEventListener("DOMContentLoaded", function () {
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+    console.log("JS chargé ✅");
 
-let letters = "01".split("");
-let fontSize = 14;
-let columns = canvas.width / fontSize;
+    // =======================
+    // 🌧 MATRIX EFFECT
+    // =======================
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
 
-let drops = [];
-for (let i = 0; i < columns; i++) drops[i] = 1;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-function draw() {
-    ctx.fillStyle = "rgba(0,0,0,0.05)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    let letters = "01".split("");
+    let fontSize = 14;
+    let columns = canvas.width / fontSize;
 
-    ctx.fillStyle = "#0F0";
-    ctx.font = fontSize + "px monospace";
+    let drops = [];
+    for (let i = 0; i < columns; i++) drops[i] = 1;
 
-    for (let i = 0; i < drops.length; i++) {
-        let text = letters[Math.floor(Math.random()*letters.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+    function draw() {
+        ctx.fillStyle = "rgba(0,0,0,0.05)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
-            drops[i] = 0;
+        ctx.fillStyle = "#0F0";
+        ctx.font = fontSize + "px monospace";
 
-        drops[i]++;
-    }
-}
+        for (let i = 0; i < drops.length; i++) {
+            let text = letters[Math.floor(Math.random()*letters.length)];
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-setInterval(draw, 33);
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
+                drops[i] = 0;
 
-// =======================
-// 📞 TELEPHONE MONDIAL
-// =======================
-const phoneInput = document.querySelector("#phone");
-
-const iti = window.intlTelInput(phoneInput, {
-    initialCountry: "auto",
-    geoIpLookup: function(callback) {
-        fetch("https://ipapi.co/json")
-            .then(res => res.json())
-            .then(data => callback(data.country_code))
-            .catch(() => callback("cd"));
-    },
-    separateDialCode: true,
-});
-
-// =======================
-// 📅 FORMAT DATE AUTO
-// =======================
-let birthInput = document.getElementById("birthdate");
-
-birthInput.addEventListener("input", function(e) {
-    let value = e.target.value.replace(/\D/g, "");
-
-    if (value.length > 2)
-        value = value.slice(0,2) + "/" + value.slice(2);
-
-    if (value.length > 5)
-        value = value.slice(0,5) + "/" + value.slice(5,9);
-
-    e.target.value = value;
-});
-
-// =======================
-// 🔐 VALIDATION + ENVOI BACKEND
-// =======================
-document.getElementById("registerForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-
-    let password = document.getElementById("password").value;
-    let confirm = document.getElementById("confirmPassword").value;
-    let birthdate = document.getElementById("birthdate").value;
-    let message = document.getElementById("message");
-
-    let phoneNumber = iti.getNumber() || phoneInput.value;
-
-    let regex = /^\d{2}\/\d{2}\/\d{4}$/;
-
-    if (!regex.test(birthdate)) {
-        message.innerText = "❌ Format date invalide (JJ/MM/AAAA)";
-        return;
+            drops[i]++;
+        }
     }
 
-    if (!phoneNumber || phoneNumber.length < 6) {
-    message.innerText = "❌ Numéro invalide";
-    return;
-    }
+    setInterval(draw, 33);
 
-    if (password !== confirm) {
-        message.innerText = "❌ Les mots de passe ne correspondent pas";
-        return;
-    }
+    // =======================
+    // 📞 TELEPHONE MONDIAL
+    // =======================
+    const phoneInput = document.querySelector("#phone");
 
-    // 📦 DONNÉES À ENVOYER
-    const data = {
-        nom: document.getElementById("nom").value,
-        postnom: document.getElementById("postnom").value,
-        prenom: document.getElementById("prenom").value,
-        birthdate: birthdate,
-        lieu: document.getElementById("lieu").value,
-        phone: phoneNumber,
-        email: document.getElementById("email").value,
-        password: password
-    };
+    const iti = window.intlTelInput(phoneInput, {
+        initialCountry: "auto",
+        geoIpLookup: function(callback) {
+            fetch("https://ipapi.co/json")
+                .then(res => res.json())
+                .then(data => callback(data.country_code))
+                .catch(() => callback("cd"));
+        },
+        separateDialCode: true,
+    });
 
-    try {
-        const res = await fetch("https://arkanet-backend.onrender.com/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        });
+    // =======================
+    // 📅 DATE
+    // =======================
+    let birthInput = document.getElementById("birthdate");
 
-        const result = await res.json();
+    birthInput.addEventListener("input", function(e) {
+        let value = e.target.value.replace(/\D/g, "");
 
-        if (result.message.includes("réussie")) {
-    message.innerText = "✅ Inscription réussie ! Redirection...";
+        if (value.length > 2)
+            value = value.slice(0,2) + "/" + value.slice(2);
 
-    setTimeout(() => {
-        window.location.href = "dashboard.html";
-    }, 2000);
-} else {
-    message.innerText = result.message;
+        if (value.length > 5)
+            value = value.slice(0,5) + "/" + value.slice(5,9);
+
+        e.target.value = value;
+    });
+
+    // =======================
+    // 🔐 SUBMIT
+    // =======================
+    document.getElementById("registerForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        let password = document.getElementById("password").value;
+        let confirm = document.getElementById("confirmPassword").value;
+        let birthdate = document.getElementById("birthdate").value;
+        let message = document.getElementById("message");
+
+        let phoneNumber = iti.getNumber() || phoneInput.value;
+
+        let regex = /^\d{2}\/\d{2}\/\d{4}$/;
+
+        if (!regex.test(birthdate)) {
+            message.innerText = "❌ Format date invalide";
+            return;
         }
 
-    } catch (error) {
-        console.log(error);
-        message.innerText = "❌ Erreur de connexion au serveur";
-    }
-});
+        if (!phoneNumber || phoneNumber.length < 6) {
+            message.innerText = "❌ Numéro invalide";
+            return;
+        }
 
-// =======================
-// 🔄 NAVIGATION
-// =======================
-function goLogin() {
-    window.location.href = "login.html";
-}
+        if (password !== confirm) {
+            message.innerText = "❌ Mots de passe différents";
+            return;
+        }
+
+        const data = {
+            nom: document.getElementById("nom").value,
+            postnom: document.getElementById("postnom").value,
+            prenom: document.getElementById("prenom").value,
+            birthdate,
+            lieu: document.getElementById("lieu").value,
+            phone: phoneNumber,
+            email: document.getElementById("email").value,
+            password
+        };
+
+        try {
+            const res = await fetch("https://arkanet-backend.onrender.com/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await res.json();
+
+            if (result.message.includes("réussie")) {
+                message.innerText = "✅ Inscription réussie";
+
+                setTimeout(() => {
+                    window.location.href = "dashboard.html";
+                }, 1500);
+            } else {
+                message.innerText = result.message;
+            }
+
+        } catch (error) {
+            console.log(error);
+            message.innerText = "❌ Erreur serveur";
+        }
+    });
+
+});
